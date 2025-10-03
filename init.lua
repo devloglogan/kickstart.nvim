@@ -432,6 +432,9 @@ require('lazy').setup({
           --  To jump back, press <C-t>.
           map('grd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
 
+          -- For swaping between header/source files in C/C++
+          map('gro', '<cmd>ClangdSwitchSourceHeader<CR>', '[G]oto [R]elated [O]ther file')
+
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
           map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
