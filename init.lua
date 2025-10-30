@@ -75,6 +75,22 @@ vim.opt.tabstop = 2 -- Number of visual spaces per TAB
 vim.opt.shiftwidth = 2 -- Number of spaces for autoindent
 vim.opt.expandtab = true -- Convert tabs to spaces
 
+-- Set shell to powershell on Windows
+if vim.fn.has 'win32' == 1 then
+  vim.opt.shell = 'powershell.exe'
+  vim.opt.shellcmdflag = '-NoLogo -ExecutionPolicy RemoteSigned -Command'
+  vim.opt.shellquote = '"'
+  vim.opt.shellxquote = ''
+
+  -- Make :term start in nvim's cwd
+  vim.api.nvim_create_autocmd('TermOpen', {
+    callback = function()
+      local cwd = vim.fn.getcwd()
+      vim.api.nvim_chan_send(vim.b.terminal_job_id, "cd '" .. cwd .. "'\r")
+    end,
+  })
+end
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
