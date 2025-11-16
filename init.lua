@@ -1,86 +1,115 @@
--- Set <space> as the leader key
--- See `:help mapleader`
---  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
+-- [[ GLOBALS ]]
+
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = true
+-- [[ SETTINGS ]]
 
--- [[ Setting options ]]
--- See `:help vim.opt`
--- NOTE: You can change these options as you wish!
---  For more options, you can see `:help option-list`
+--- Basic Settings
+vim.opt.number = true -- Line numbers
+vim.opt.relativenumber = true -- Relative line numbers
+vim.opt.cursorline = true -- Highlight current line
+vim.opt.scrolloff = 10 -- Keep 10 lines above/below cursor
+vim.opt.sidescrolloff = 8 -- Keep 8 columns left/right of cursor
+vim.opt.wrap = false -- Don't wrap lines
+vim.opt.cmdheight = 1 -- Command line height
+vim.opt.spelllang = 'en' -- Set language for spellchecking
 
-vim.opt.number = true
-vim.opt.relativenumber = true
-
-vim.opt.wrap = false
-
--- Enable mouse mode, can be useful for resizing splits for example!
-vim.opt.mouse = 'a'
-
--- Don't show the mode, since it's already in the status line
-vim.opt.showmode = false
-
--- Sync clipboard between OS and Neovim.
---  Schedule the setting after `UiEnter` because it can increase startup-time.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
-vim.schedule(function()
-  vim.opt.clipboard = 'unnamedplus'
-end)
-
-vim.opt.breakindent = true
-vim.opt.undofile = true
-
--- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
-
--- Keep signcolumn on by default
-vim.opt.signcolumn = 'yes'
-
--- Decrease update time
-vim.opt.updatetime = 250
-
--- Decrease mapped sequence wait time
-vim.opt.timeoutlen = 300
-
--- Configure how new splits should be opened
-vim.opt.splitright = true
-vim.opt.splitbelow = true
-
--- Sets how neovim will display certain whitespace characters in the editor.
---  See `:help 'list'`
---  and `:help 'listchars'`
+-- Tabbing / Indentation
+vim.opt.tabstop = 2 -- Tab width
+vim.opt.shiftwidth = 2 -- Indent width
+vim.opt.softtabstop = 2 -- Soft tab stop
+vim.opt.expandtab = true -- Use spaces instead of tabs
+vim.opt.smartindent = true -- Smart auto-indenting
+vim.opt.autoindent = true -- Copy indent from current line
+vim.opt.grepprg = 'rg --vimgrep' -- Use ripgrep if available
+vim.opt.grepformat = '%f:%l:%c:%m' -- filename, line number, column, content
 vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' } -- Whitespace display symbols
 
--- Preview substitutions live, as you type!
-vim.opt.inccommand = 'split'
+-- Search Settings
+vim.opt.ignorecase = true -- Case-insensitive search
+vim.opt.smartcase = true -- Case-sensitive if uppercase in search
+vim.opt.hlsearch = true -- Don't highlight search results
+vim.opt.incsearch = true -- Show matches as you type
 
--- Show which line your cursor is on
-vim.opt.cursorline = true
+-- Visual Settings
+vim.opt.termguicolors = true -- Enable 24-bit colors
+vim.opt.signcolumn = 'yes' -- Always show sign column
+vim.opt.colorcolumn = '100' -- Show column at 100 characters
+vim.opt.showmatch = true -- Highlight matching brackets
+vim.opt.matchtime = 2 -- How long to show matching bracket
+vim.opt.completeopt = 'menuone,noinsert,noselect' -- Completion options
+vim.opt.showmode = false -- Don't show mode in command line
+vim.opt.pumheight = 10 -- Popup menu height
+vim.opt.pumblend = 10 -- Popup menu transparency
+vim.opt.winblend = 0 -- Floating window transparency
+vim.opt.conceallevel = 0 -- Don't hide markup
+vim.opt.concealcursor = '' -- Show markup even on cursor line
+vim.opt.lazyredraw = false -- redraw while executing macros (butter UX)
+vim.opt.redrawtime = 10000 -- Timeout for syntax highlighting redraw
+vim.opt.maxmempattern = 20000 -- Max memory for pattern matching
+vim.opt.synmaxcol = 300 -- Syntax highlighting column limit
 
--- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 10
+-- File Handling
+vim.opt.backup = false -- Don't create backup files
+vim.opt.writebackup = false -- Don't backup before overwriting
+vim.opt.swapfile = false -- Don't create swap files
+vim.opt.undofile = true -- Persistent undo
+vim.opt.updatetime = 300 -- Time in ms to trigger CursorHold
+vim.opt.timeoutlen = 500 -- Time in ms to wait for mapped sequence
+vim.opt.ttimeoutlen = 0 -- No wait for key code sequences
+vim.opt.autoread = true -- Auto-reload file if changed outside
+vim.opt.autowrite = false -- Don't auto-save on some events
+vim.opt.diffopt:append 'vertical' -- Vertical diff splits
+vim.opt.diffopt:append 'algorithm:patience' -- Better diff algorithm
+vim.opt.diffopt:append 'linematch:60' -- Better diff highlighting (smart line matching)
 
--- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
--- instead raise a dialog asking if you wish to save the current file(s)
--- See `:help 'confirm'`
-vim.opt.confirm = true
+-- Set undo directory and ensure it exists
+local undodir = '~/.local/share/nvim/undodir' -- Undo directory path
+local undodir_path = vim.fn.expand(undodir) -- Expand to full path
+vim.opt.undodir = undodir_path
+if vim.fn.isdirectory(undodir_path) == 0 then
+  vim.fn.mkdir(undodir_path, 'p') -- Create if not exists
+end
 
-vim.opt.tabstop = 2 -- Number of visual spaces per TAB
-vim.opt.shiftwidth = 2 -- Number of spaces for autoindent
-vim.opt.expandtab = true -- Convert tabs to spaces
+-- Behavior Settings
+vim.opt.errorbells = false -- Disable error sounds
+vim.opt.backspace = 'indent,eol,start' -- Make backspace behave naturally
+vim.opt.autochdir = false -- Don't change directory automatically
+vim.opt.iskeyword:append '-' -- Treat dash as part of a word
+vim.opt.path:append '**' -- Search into subfolders with `gf`
+vim.opt.selection = 'inclusive' -- Use inclusive selection
+vim.opt.mouse = 'a' -- Enable mouse support
+vim.opt.clipboard = 'unnamedplus' -- Use system clipboard
+vim.opt.modifiable = true -- Allow editing buffers
+vim.opt.encoding = 'UTF-8' -- Use UTF-8 encoding
+vim.opt.wildmenu = true -- Enable command-line completion menu
+vim.opt.wildmode = 'longest:full,full' -- Completion mode for command-line
+vim.opt.wildignorecase = true -- Case-insensitive tab completion in commands
+vim.opt.inccommand = 'split' -- Preview substitutions live, as you type!
+vim.opt.confirm = true -- See `:help 'confirm'
 
--- [[ Basic Keymaps ]]
---  See `:help vim.keymap.set()`
+-- Cursor Settings
+vim.opt.guicursor = {
+  'n-v-c:block', -- Normal, Visual, Command-line
+  'i-ci-ve:ver20', -- Insert, Command-line Insert, Visual-exclusive
+  'r-cr:hor20', -- Replace, Command-line Replace
+  'o:hor50', -- Operator-pending
+  'a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor', -- All modes: blinking & highlight groups
+  'sm:block-blinkwait175-blinkoff150-blinkon175', -- Showmatch mode
+}
 
--- Clear highlights on search when pressing <Esc> in normal mode
---  See `:help hlsearch`
-vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+-- Folding Settings
+vim.opt.foldmethod = 'expr' -- Use expression for folding
+vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()' -- Use treesitter for folding
+vim.opt.foldlevel = 99 -- Keep all folds open by default
+
+-- Split Behavior
+vim.opt.splitbelow = true -- Horizontal splits open below
+vim.opt.splitright = true -- Vertical splits open to the right- See `:help vim.opt`
+
+-- [[ KEYMAPS ]]
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>Q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
@@ -100,17 +129,36 @@ vim.keymap.set('n', '<leader>q', function()
   end
 end, { desc = 'Toggle [Q]uickfix list' })
 
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+-- Center screen when jumping
+vim.keymap.set('n', 'n', 'nzzzv', { desc = 'Next search result (centered)' })
+vim.keymap.set('n', 'N', 'Nzzzv', { desc = 'Previous search result (centered)' })
+vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Half page down (centered)' })
+vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Half page up (centered)' })
 
+-- Better window navigation
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+-- Move windows
 vim.keymap.set('n', '<C-S-h>', '<C-w>H', { desc = 'Move window to the left' })
 vim.keymap.set('n', '<C-S-l>', '<C-w>L', { desc = 'Move window to the right' })
 vim.keymap.set('n', '<C-S-j>', '<C-w>J', { desc = 'Move window to the lower' })
 vim.keymap.set('n', '<C-S-k>', '<C-w>K', { desc = 'Move window to the upper' })
+
+-- Better indenting in visual mode
+vim.keymap.set('v', '<', '<gv', { desc = 'Indent left and reselect' })
+vim.keymap.set('v', '>', '>gv', { desc = 'Indent right and reselect' })
+
+-- Better J behavior
+vim.keymap.set('n', 'J', 'mzJ`z', { desc = 'Join lines and keep cursor position' })
+
+-- Clear search highlight
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+
+-- Exit terminal mode
+vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- [[ Basic Autocommands ]]
 vim.api.nvim_create_autocmd('TextYankPost', {
@@ -182,40 +230,8 @@ require('lazy').setup({
       -- this setting is independent of vim.opt.timeoutlen
       delay = 0,
       icons = {
-        -- set icon mappings to true if you have a Nerd Font
-        mappings = vim.g.have_nerd_font,
-        -- If you are using a Nerd Font: set icons.keys to an empty table which will use the
-        -- default which-key.nvim defined Nerd Font icons, otherwise define a string table
-        keys = vim.g.have_nerd_font and {} or {
-          Up = '<Up> ',
-          Down = '<Down> ',
-          Left = '<Left> ',
-          Right = '<Right> ',
-          C = '<C-…> ',
-          M = '<M-…> ',
-          D = '<D-…> ',
-          S = '<S-…> ',
-          CR = '<CR> ',
-          Esc = '<Esc> ',
-          ScrollWheelDown = '<ScrollWheelDown> ',
-          ScrollWheelUp = '<ScrollWheelUp> ',
-          NL = '<NL> ',
-          BS = '<BS> ',
-          Space = '<Space> ',
-          Tab = '<Tab> ',
-          F1 = '<F1>',
-          F2 = '<F2>',
-          F3 = '<F3>',
-          F4 = '<F4>',
-          F5 = '<F5>',
-          F6 = '<F6>',
-          F7 = '<F7>',
-          F8 = '<F8>',
-          F9 = '<F9>',
-          F10 = '<F10>',
-          F11 = '<F11>',
-          F12 = '<F12>',
-        },
+        mappings = true, -- Assumes nerd font
+        keys = {}, -- Assumes nerd font
       },
 
       -- Document existing key chains
@@ -254,8 +270,7 @@ require('lazy').setup({
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
-      -- Useful for getting pretty icons, but requires a Nerd Font.
-      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons', enabled = true }, -- Assumes nerd font
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -509,14 +524,14 @@ require('lazy').setup({
         severity_sort = true,
         float = { border = 'rounded', source = 'if_many' },
         underline = { severity = vim.diagnostic.severity.ERROR },
-        signs = vim.g.have_nerd_font and {
+        signs = { -- Assumes nerd font
           text = {
             [vim.diagnostic.severity.ERROR] = '󰅚 ',
             [vim.diagnostic.severity.WARN] = '󰀪 ',
             [vim.diagnostic.severity.INFO] = '󰋽 ',
             [vim.diagnostic.severity.HINT] = '󰌶 ',
           },
-        } or {},
+        },
         virtual_text = {
           source = 'if_many',
           spacing = 2,
@@ -721,8 +736,6 @@ require('lazy').setup({
       },
 
       appearance = {
-        -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
-        -- Adjusts spacing to ensure icons are aligned
         nerd_font_variant = 'mono',
       },
 
@@ -823,8 +836,7 @@ require('lazy').setup({
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
       local statusline = require 'mini.statusline'
-      -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
+      statusline.setup { use_icons = true } -- Assumes nerd font
 
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
@@ -892,23 +904,7 @@ require('lazy').setup({
   -- you can continue same window with `<space>sr` which resumes last telescope search
 }, {
   ui = {
-    -- If you are using a Nerd Font: set icons to an empty table which will use the
-    -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
-    icons = vim.g.have_nerd_font and {} or {
-      cmd = '⌘',
-      config = '🛠',
-      event = '📅',
-      ft = '📂',
-      init = '⚙',
-      keys = '🗝',
-      plugin = '🔌',
-      runtime = '💻',
-      require = '🌙',
-      source = '📄',
-      start = '🚀',
-      task = '📌',
-      lazy = '💤 ',
-    },
+    icons = {}, -- Assumes nerd font
   },
 })
 
