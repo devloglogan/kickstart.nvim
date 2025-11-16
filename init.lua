@@ -185,11 +185,11 @@ require('lazy').setup({
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
 
   {
-    'catppuccin/nvim',
+    'folke/tokyonight.nvim',
     lazy = false,
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme 'catppuccin'
+      vim.cmd.colorscheme 'tokyonight'
     end,
   },
 
@@ -215,7 +215,6 @@ require('lazy').setup({
   { 'nvim-mini/mini.cursorword', version = '*', opts = {} },
   { 'nvim-mini/mini.pairs', version = '*', opts = {} },
   { 'nvim-mini/mini.trailspace', version = '*', opts = {} },
-  { 'nvim-mini/mini.notify', version = '*', opts = {} },
   { 'nvim-mini/mini.pick', version = '*', opts = {} },
   { 'nvim-mini/mini.statusline', version = '*', opts = {} },
   {
