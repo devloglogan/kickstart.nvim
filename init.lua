@@ -443,6 +443,7 @@ require('lazy').setup({
       -- See `:help lspconfig-all` for a list of all the pre-configured LSPs
       local servers = {
         clangd = {},
+        zls = {},
 
         lua_ls = {
           settings = {
