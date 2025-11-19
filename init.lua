@@ -344,6 +344,7 @@ require('lazy').setup({
           map('grn', vim.lsp.buf.rename, '[R]e[n]ame') -- Rename the variable under your cursor.
           map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' }) -- Execute a code action, usually your cursor needs to be on top of an error
           map('gro', '<cmd>LspClangdSwitchSourceHeader<CR>', '[G]oto [O]ther file') -- Swap between header/source files in C/C++
+          map('grd', vim.lsp.buf.definition, '[G]oto [D]efinition')
           map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
           -- This function resolves a difference between neovim nightly (version 0.11) and stable (version 0.10)
