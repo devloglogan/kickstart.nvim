@@ -102,7 +102,7 @@ vim.opt.guicursor = {
 
 -- Folding Settings
 vim.opt.foldmethod = 'expr' -- Use expression for folding
-vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()' -- Use treesitter for folding
+vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 vim.opt.foldlevel = 99 -- Keep all folds open by default
 
 -- Split Behavior
@@ -176,6 +176,12 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
+local gdproject = io.open(vim.fn.getcwd() .. '/project.godot', 'r')
+if gdproject then
+  io.close(gdproject)
+  vim.fn.serverstart './godothost'
+end
 
 -- [[ BOOTSTRAP LAZY.NVIM ]]
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -434,6 +440,8 @@ require('lazy').setup({
           end,
         },
       }
+
+      vim.lsp.enable 'gdscript'
     end,
   },
 
