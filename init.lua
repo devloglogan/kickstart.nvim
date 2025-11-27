@@ -25,7 +25,7 @@ vim.opt.autoindent = true -- Copy indent from current line
 vim.opt.grepprg = 'rg --vimgrep' -- Use ripgrep if available
 vim.opt.grepformat = '%f:%l:%c:%m' -- filename, line number, column, content
 vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' } -- Whitespace display symbols
+vim.opt.listchars = { tab = '  ', trail = '·', nbsp = '␣' } -- Whitespace display symbols
 
 -- Search Settings
 vim.opt.ignorecase = true -- Case-insensitive search
@@ -441,7 +441,9 @@ require('lazy').setup({
         },
       }
 
+      -- Custom lsp stuff
       vim.lsp.enable 'gdscript'
+      vim.lsp.config.clangd = { cmd = { 'clangd', '--header-insertion=never' } }
     end,
   },
 
