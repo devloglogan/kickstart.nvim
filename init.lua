@@ -91,6 +91,20 @@ if vim.fn.has 'win32' == 1 then
   })
 end
 
+-- Stop weird tab behavior caused by snippets
+vim.api.nvim_create_autocmd('ModeChanged', {
+  pattern = '*',
+  callback = function()
+    if
+      ((vim.v.event.old_mode == 's' and vim.v.event.new_mode == 'n') or vim.v.event.old_mode == 'i')
+      and require('luasnip').session.current_nodes[vim.api.nvim_get_current_buf()]
+      and not require('luasnip').session.jump_active
+    then
+      require('luasnip').unlink_current()
+    end
+  end,
+})
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -820,9 +834,9 @@ require('lazy').setup({
       local MiniFiles = require 'mini.files'
       MiniFiles.setup()
 
-      -- vim.keymap.set('n', '\\', function()
-      --   MiniFiles.open()
-      -- end, { desc = 'Open MiniFiles' })
+      vim.keymap.set('n', '\\', function()
+        MiniFiles.open()
+      end, { desc = 'Open MiniFiles' })
 
       -- vim.keymap.set('n', '<leader>\\', function()
       --   local _ = MiniFiles.close() or MiniFiles.open(vim.api.nvim_buf_get_name(0), false)
@@ -831,12 +845,12 @@ require('lazy').setup({
       --   end, 30)
       -- end,
 
-      vim.keymap.set('n', '\\', function()
-        local buf_name = vim.api.nvim_buf_get_name(0)
-        local path = vim.fn.filereadable(buf_name) == 1 and buf_name or vim.fn.getcwd()
-        MiniFiles.open(path)
-        MiniFiles.reveal_cwd()
-      end, { desc = 'Open Mini Files' })
+      -- vim.keymap.set('n', '\\', function()
+      --   local buf_name = vim.api.nvim_buf_get_name(0)
+      --   local path = vim.fn.filereadable(buf_name) == 1 and buf_name or vim.fn.getcwd()
+      --   MiniFiles.open(path)
+      --   MiniFiles.reveal_cwd()
+      -- end, { desc = 'Open Mini Files' })
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
